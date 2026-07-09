@@ -1,0 +1,13 @@
+# Generated QR images
+*.png
+!favicon.png
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# OS cruft
+.DS_Store

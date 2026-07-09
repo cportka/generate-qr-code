@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+  <title>QR Code Generator — free, private, in your browser</title>
+  <meta name="description" content="Generate a QR code for any URL or text, right in your browser. Nothing is uploaded — encoding happens locally on your device. Download a crisp PNG or scalable SVG. Free and open source (MIT)." />
+  <link rel="canonical" href="https://cportka.github.io/generate-qr-code/" />
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:title" content="QR Code Generator — free, private, in your browser" />
+  <meta property="og:description" content="Generate a QR code for any URL or text locally in your browser — nothing is uploaded. Download a crisp PNG or scalable SVG. Free and open source (MIT)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cportka.github.io/generate-qr-code/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="QR Code Generator — free, private, in your browser" />
+  <meta name="twitter:description" content="Generate a QR code for any URL or text locally in your browser — nothing is uploaded. Download a crisp PNG or scalable SVG." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR Code Generator",
+    "url": "https://cportka.github.io/generate-qr-code/",
+    "description": "Generate a QR code for any URL or text locally in your browser. Encoding happens on your device — nothing is uploaded. Download a PNG or SVG.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires JavaScript",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "author": { "@type": "Person", "name": "Chris Portka" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script src="assets/qrcode-generator.js" defer></script>
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>QR Code Generator</h1>
+      <p class="tag">Turn any link or text into a QR code — encoded right here in your browser, nothing uploaded.</p>
+      <p class="meta">
+        Part of <a href="https://cportka.github.io/claude-plugins/">Portka Tools</a> ·
+        <a href="https://github.com/cportka/generate-qr-code">GitHub</a> ·
+        <a href="https://github.com/cportka/generate-qr-code#command-line">CLI script</a> ·
+        <a href="https://github.com/cportka/generate-qr-code/blob/main/LICENSE">MIT</a>
+      </p>
+    </header>
+
+    <main>
+      <section class="panel controls" aria-labelledby="controls-heading">
+        <h2 id="controls-heading" class="sr-only">QR code options</h2>
+
+        <div class="field">
+          <label for="text">URL or text</label>
+          <textarea id="text" rows="3" spellcheck="false" autocomplete="off"
+            placeholder="https://example.com" aria-describedby="status"></textarea>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="ecl">Error correction</label>
+            <select id="ecl">
+              <option value="L">L — 7% (smallest)</option>
+              <option value="M">M — 15%</option>
+              <option value="Q">Q — 25%</option>
+              <option value="H" selected>H — 30% (most robust)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="size">Download size</label>
+            <select id="size">
+              <option value="512">512 px</option>
+              <option value="1024" selected>1024 px</option>
+              <option value="2048">2048 px</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="margin">Quiet zone</label>
+            <input id="margin" type="number" min="0" max="16" step="1" value="4"
+              inputmode="numeric" />
+          </div>
+
+          <div class="field">
+            <label for="fg">Foreground</label>
+            <input id="fg" type="color" value="#000000" />
+          </div>
+
+          <div class="field">
+            <label for="bg">Background</label>
+            <input id="bg" type="color" value="#ffffff" />
+          </div>
+
+          <div class="field field--check">
+            <label for="transparent" class="check">
+              <input id="transparent" type="checkbox" />
+              <span>Transparent background</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="dl-png" type="button" class="btn btn--primary" disabled>Download PNG</button>
+          <button id="dl-svg" type="button" class="btn" disabled>Download SVG</button>
+          <button id="copy" type="button" class="btn" disabled>Copy image</button>
+        </div>
+      </section>
+
+      <section class="panel preview" aria-labelledby="preview-heading">
+        <h2 id="preview-heading" class="sr-only">Preview</h2>
+        <div class="canvas-frame">
+          <canvas id="canvas" role="img" aria-label="Generated QR code preview" width="300" height="300"></canvas>
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite">Enter a URL or text to generate a QR code.</p>
+        <p id="caption" class="caption"></p>
+      </section>
+    </main>
+
+    <section class="notes">
+      <h2>How it works</h2>
+      <ul class="plain">
+        <li><strong>Private by design.</strong> The QR code is generated locally with the MIT-licensed
+          <a href="https://github.com/kazuhikoarase/qrcode-generator">qrcode-generator</a> library,
+          bundled with this page. Your text never leaves your device — there is no server.</li>
+        <li><strong>Higher error correction</strong> (Q/H) survives scuffs, logos, and low light at the
+          cost of a denser code. <strong>H</strong> is the default, matching the command-line script.</li>
+        <li><strong>PNG</strong> is best for printing and sharing; <strong>SVG</strong> scales to any size
+          without blur — ideal for signage and vector art.</li>
+      </ul>
+    </section>
+
+    <footer>
+      &copy; Chris Portka ·
+      <a href="https://github.com/cportka/generate-qr-code/blob/main/LICENSE">MIT</a>, free to use with
+      attribution preserved · Prefer the terminal? See the
+      <a href="https://github.com/cportka/generate-qr-code#command-line">Python CLI</a>.
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="QR code">
+  <rect width="32" height="32" rx="6" fill="#0d1117"/>
+  <g fill="#e6edf3">
+    <!-- top-left finder -->
+    <path d="M6 6h8v8H6z" fill="none" stroke="#e6edf3" stroke-width="2"/>
+    <rect x="9" y="9" width="2" height="2"/>
+    <!-- top-right finder -->
+    <path d="M18 6h8v8h-8z" fill="none" stroke="#e6edf3" stroke-width="2"/>
+    <rect x="21" y="9" width="2" height="2"/>
+    <!-- bottom-left finder -->
+    <path d="M6 18h8v8H6z" fill="none" stroke="#e6edf3" stroke-width="2"/>
+    <rect x="9" y="21" width="2" height="2"/>
+    <!-- data modules -->
+    <rect x="18" y="18" width="2" height="2"/>
+    <rect x="22" y="18" width="2" height="2"/>
+    <rect x="24" y="20" width="2" height="2"/>
+    <rect x="18" y="22" width="2" height="2"/>
+    <rect x="20" y="24" width="2" height="2"/>
+    <rect x="24" y="24" width="2" height="2"/>
+  </g>
+</svg>
