@@ -8,9 +8,20 @@
   "use strict";
 
   var el = {};
-  var current = null; // last successfully built QR model, or null
+  var current = null;          // last successfully built QR model, or null
+  var debounceTimer = null;    // pending debounced render, so exports can flush it
+  var copyResetTimer = null;   // pending "Copied!" -> label reset
+  var COPY_LABEL = "Copy image";
 
   function byId(id) { return document.getElementById(id); }
+
+  // Run any pending debounced render synchronously so `current` (the model) and the live inputs
+  // agree before an export/copy. Without this, a click within the debounce window would export the
+  // previously-rendered model while naming the file from the newer input (content/name mismatch).
+  function flushRender() {
+    if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null; }
+    render();
+  }
 
   // Smallest square that shows the code crisply in the preview.
   var PREVIEW_TARGET_PX = 320;
@@ -186,6 +197,7 @@
   }
 
   function onDownloadPng() {
+    flushRender();
     if (!current) { return; }
     var opts = readOptions();
     var canvas = exportCanvas(opts);
@@ -195,6 +207,7 @@
   }
 
   function onDownloadSvg() {
+    flushRender();
     if (!current) { return; }
     var opts = readOptions();
     var svg = buildSVG(current, opts);
@@ -202,6 +215,7 @@
   }
 
   function onCopy() {
+    flushRender();
     if (!current || !supportsCopy()) { return; }
     var opts = readOptions();
     var canvas = exportCanvas(opts);
@@ -209,9 +223,11 @@
       if (!blob) { return; }
       navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(
         function () {
-          var prev = el.copy.textContent;
+          // Restore to a fixed label (not the live textContent) and clear any prior reset, so a
+          // second copy within the window can't capture "Copied!" and leave the button stuck.
+          clearTimeout(copyResetTimer);
           el.copy.textContent = "Copied!";
-          setTimeout(function () { el.copy.textContent = prev; }, 1400);
+          copyResetTimer = setTimeout(function () { el.copy.textContent = COPY_LABEL; }, 1400);
         },
         function () { setStatus("Couldn't copy to the clipboard — try downloading instead.", true); }
       );
@@ -240,10 +256,9 @@
       return;
     }
 
-    var debounce;
     function schedule() {
-      clearTimeout(debounce);
-      debounce = setTimeout(render, 120);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(render, 120);
     }
 
     el.text.addEventListener("input", schedule);
