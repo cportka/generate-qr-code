@@ -1,6 +1,6 @@
 # QR Code Generator
 
-> **Version:** 0.1.0 · **Live site:** [cportka.github.io/generate-qr-code](https://cportka.github.io/generate-qr-code/) · **License:** [MIT](./LICENSE) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md)
+> **Version:** 0.2.0 · **Live site:** [cportka.github.io/generate-qr-code](https://cportka.github.io/generate-qr-code/) · **License:** [MIT](./LICENSE) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md)
 
 Generate a QR code for any URL or text — either in your **browser** (a private, no-upload web app)
 or from the **command line** (a small Python script). Part of [Portka Tools](https://cportka.github.io/claude-plugins/).
@@ -14,8 +14,9 @@ A single static page, hosted on GitHub Pages: **[cportka.github.io/generate-qr-c
   leaves your device — there is no server and no network request.
 - **Controls.** Error-correction level (L/M/Q/H, default **H**), quiet zone, foreground/background
   colors, and an optional transparent background, all with a live preview.
-- **Export.** Download a crisp **PNG** (512 / 1024 / 2048 px) or a scalable **SVG**, or copy the
-  image straight to your clipboard.
+- **Export.** Download a crisp **PNG** (512 / 1024 / 2048 px, or a **custom** width × height) or a
+  scalable **SVG**, or copy the image to your clipboard — copy uses the same size setting as the
+  PNG download.
 
 It's plain HTML/CSS/JS with no build step and no third-party origins, so it works offline and under a
 strict Content-Security-Policy.

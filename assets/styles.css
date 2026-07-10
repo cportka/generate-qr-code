@@ -160,6 +160,8 @@ footer {
   font-size: 0.9rem;
 }
 
+.hidden { display: none; }
+
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;

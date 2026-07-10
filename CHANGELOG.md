@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com) and the project uses
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry below.
 
+## [0.2.0] - 2026-07-10
+
+### Added
+- **Custom download size**: the front-end's "Download size" now offers a **Custom…** option with
+  width and height inputs, so you can export a QR at any dimensions (e.g. 1500×900). Non-square
+  requests place the code, centered, on a canvas of exactly the requested size.
+
+### Changed
+- **Copy image** now uses the same export path as Download PNG, so it always reflects the selected
+  size — including a custom width/height.
+
 ## [0.1.0] - 2026-07-09
 
 ### Added
