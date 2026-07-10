@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cportka.github.io/generate-qr-code/sitemap.xml

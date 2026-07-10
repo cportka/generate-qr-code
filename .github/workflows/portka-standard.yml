@@ -1,0 +1,32 @@
+name: portka-standard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # Install the QR dependencies so the end-to-end PNG test actually runs
+      # (it self-skips when they're absent). node is preinstalled on the runner,
+      # so the vendored-library smoke test runs too.
+      - name: Install QR dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "qrcode[pil]"
+
+      - name: Run tests
+        run: |
+          if [ -f tests/run-tests.sh ]; then
+            bash tests/run-tests.sh
+          else
+            echo "No tests/run-tests.sh found; nothing to validate."
+          fi

@@ -1,17 +1,24 @@
-import os
 import subprocess
 import sys
 import re
 
-# Check if qrcode module is installed, if not, install it
-try:
-    import qrcode
-except ImportError:
-    print("qrcode module not found. Installing...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "qrcode[pil]"])
 
-# Re-import after installing
-import qrcode
+def _ensure_qrcode():
+    """
+    Import the qrcode library, installing it on first use if it's missing.
+
+    The import is lazy (done here rather than at module load) so this module can
+    be imported for its pure helpers — e.g. by the test suite — without a network
+    install or a hard dependency on qrcode/Pillow being present.
+    """
+    try:
+        import qrcode
+    except ImportError:
+        print("qrcode module not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "qrcode[pil]"])
+        import qrcode
+    return qrcode
+
 
 def sanitize_filename(filename):
     """
@@ -19,10 +26,13 @@ def sanitize_filename(filename):
     """
     return re.sub(r'[\\/*?:"<>|]', "", filename)
 
+
 def generate_qr_code(url):
     """
     Generate a QR code for the given URL and save it as a PNG image.
     """
+    qrcode = _ensure_qrcode()
+
     # Create a QR code instance
     qr = qrcode.QRCode(
         version=1,
@@ -42,6 +52,8 @@ def generate_qr_code(url):
     img = img.resize((2048, 2048))
     filename = sanitize_filename(url) + '.png'
     img.save(filename)
+    return filename
+
 
 if __name__ == "__main__":
     # Ask the user for a URL
